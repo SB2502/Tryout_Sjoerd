@@ -8,4 +8,7 @@ cat nytimes_humanities_tabbed.csv | awk -F '\t' '{if ($2 ~ "Front Page" || $8 ~ 
 echo -e "art\tdec\tfront_art"
 
 # Create output by pasting the previously created text files
-paste artikelen_per_decennium.txt voorpagina_artikelen_per_decennium.txt 
+paste artikelen_per_decennium.txt voorpagina_artikelen.txt 
+
+rm artikelen_per_decennium.txt
+rm voorpagina_artikelen.txt
