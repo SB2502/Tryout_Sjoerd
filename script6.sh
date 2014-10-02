@@ -1,24 +1,40 @@
+#letting the user know he or she is in for a wait.. 
 echo "Finding days of January, one moment please..." 
 
+#create a variable for the entire span of years
 for i in {1850..2015}; do 
 
+#label variable as year and add days of the week
 year=$i
 day=zo
 day2=ma
 day3=di
 day4=wo
+#express "do" between quotes because it would otherwise be read as another do-statement. 
 day5="do"
 day6=vr
 day7=za
 
+#1. use NCAL to pop-up calender in command-line-interface, use variable to know for sure all years will be checked 
+#2. use SED to replace empty spaces with underscores so that AWK can read them properly
+#3. let AWK print the first 11 fields which display the first 3 months
+#4. use SED and TAIL do filter out the line which holds the day.nr's of monday in the first month
+#5. use SED to remove the monday-indicator "ma" 
+#6. Print the results into a text file
+
 ncal $year | sed -e 's/ /_/g' | awk -F "_" '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11}' | sed 3q | tail +3 | sed -E 's/'$day2'//' > jan_-$day2-_$year.txt
 
+#create an explaing output and paste the results of step nr. 6 behind it. Add this line to another text-file.
+#make sure to write into the other textfile via ">>" becauce the script will iterate over this line multiple times (once per year)
 echo -e "maandag januari $year=" "$(cat jan_-$day2-_$year.txt)" >> total_output2.txt
 
+#remove temp. files because they will stack-up and clutter the user's drive 
 rm jan_-$day2-_$year.txt
 
+#re-do first scriptline but instead of filtering out monday, filter out thuesday
 ncal $year | sed -e 's/ /_/g' | awk -F "_" '{print $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11}' | sed 4q | tail +4 | sed -E 's/'$day3'//' > jan_-$day3-_$year.txt
 
+#idem, etc.. 
 echo -e "dinsdag januari $year=" "$(cat jan_-$day3-_$year.txt)" >> total_output2.txt
 
 rm jan_-$day3-_$year.txt
@@ -53,14 +69,18 @@ echo -e "zondag januari $year=" "$(cat jan_-$day-_$year.txt)" >> total_output2.t
 
 rm jan_-$day-_$year.txt
 
+#get total output file and copy it to another file, the output will be used again later in the script and would clutter. 
 echo -e "$(cat total_output2.txt)" > total_January.txt
 
 done
 
+#remove total output file
 rm total_output2.txt
 
+#inform user the days of month 1 have been uncovered.  
 echo "Days of January have been uncovered and written into total_January.txt"
 
+#start another circle, now for May. 
 echo "Finding days of May, one moment please..." 
 
 for i in {1850..2015}; do 
